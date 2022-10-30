@@ -6,14 +6,17 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 require('dotenv').config();
 
+let auth = require('../services/authentication');
+let checkRole = require('../services/checkRole');
+
 
 router.post('/signup', (req, res) => {
   let user = req.body;
-  query = 'select email, password, role, status from user where email=?'
+  let query = 'select email, password, role, status from user where email=?'
   connection.query(query, [user.email], (err, results) => {
     if (!err) {
       if (results.length <= 0) {
-        query = "insert into user(name, contactNumber, email, password, status, role) values(?,?,?,?,'false','user')"
+        let query = "insert into user(name, contactNumber, email, password, status, role) values(?,?,?,?,'false','user')"
         connection.query(query,[user.name, user.contactNumber, user.email, user.password], (err, results) => {
           if (!err) {
             return res.status(200).json({message: 'Successfully Registered'});
@@ -32,9 +35,11 @@ router.post('/signup', (req, res) => {
 
 router.post('/login', (req, res) => {
   const user = req.body;
-  query = 'select email, password, role, status from user where email=?';
+  let query = 'select email, password, role, status from user where email=?';
   connection.query(query, [user.email], (err, results) => {
     if (!err) {
+      console.log(results)
+      console.log(user)
       if (results.length <= 0 || results[0].password != user.password) {
         return res.status(401).json({message: 'Incorrect Username or Password'});
       } else if (results[0].status === 'false') {
@@ -69,7 +74,7 @@ let transporter = nodemailer.createTransport({
 
 router.post('/forgotPassword', (req, res) => {
   const user = req.body;
-  query = 'select email, password from user where email=?';
+  let query = 'select email, password from user where email=?';
   connection.query(query, [user.email], (err, results) => {
     if (!err) {
       if(results.length <= 0 ) {
@@ -100,6 +105,39 @@ router.post('/forgotPassword', (req, res) => {
   })
 })
 
-router.get('/get')
+router.get('/get', auth.authenticateToken, (req, res) => {
+  let query = 'select id, name, email, contactNumber, status from user where role = "user"';
+  connection.query(query, (err, results) => {
+    if (!err) {
+      return res.status(200).json(results);
+    } else {
+      return res.status(500).json(err);
+    }
+  })
+})
+
+router.patch('/update', auth.authenticateToken, (req, res) => {
+  let user = req.body;
+  let query = 'update user set status=? where id=?';
+  connection.query(query, [user.status, user.id], (err, results) => {
+    if (!err) {
+      if (results.affectedRows == 0) {
+        return res.status(404).json({message: 'User id does not exist'});
+      }
+
+      return res.status(200).json({message: 'User Updated Successfully'});
+    } else {
+      return res.status(500).json(err);
+    }
+  })
+})
+
+router.get('/checkToken', auth.authenticateToken, (req, res) => {
+  return res.status(200).json({message: 'true'});
+})
+
+router.post('/changePassword', (req, res) => {
+  // const
+})
 
 module.exports = router;
