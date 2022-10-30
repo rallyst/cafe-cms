@@ -9,6 +9,7 @@
 # Node
 /node_modules
 /backend-cafe-nodejs/node_modules
+backend-cafe-nodejs/pass.md
 npm-debug.log
 yarn-error.log
 

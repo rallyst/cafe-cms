@@ -53,7 +53,14 @@ router.post('/login', (req, res) => {
 })
 
 let transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.ukr.net',
+  port: 465,
+  // logger: true,
+  // debug: true,
+  tls:{
+    rejectUnAuthorized: true
+  },
+  secureConnection: true,
   auth: {
     user: process.env.EMAIL,
     pass: process.env.PASSWORD
@@ -78,14 +85,13 @@ router.post('/forgotPassword', (req, res) => {
             + results[0].password
             + '<br><a href="http://localhost:4200/">Click here to login</a></p>'
         };
-
-        transporter.sendMail(mailOptions, function(error, info) {
+        transporter.sendMail(mailOptions, function (error, info) {
           if (error) {
             console.log(error);
           } else {
             console.log('Email sent: ' + info.response)
           }
-        });
+        })
         return res.status(200).json({message: 'Password sent successfully to your email'});
       }
     } else {
@@ -93,5 +99,7 @@ router.post('/forgotPassword', (req, res) => {
     }
   })
 })
+
+router.get('/get')
 
 module.exports = router;
