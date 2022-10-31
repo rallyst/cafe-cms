@@ -105,7 +105,7 @@ router.post('/forgotPassword', (req, res) => {
   })
 })
 
-router.get('/get', auth.authenticateToken, (req, res) => {
+router.get('/get', auth.authenticateToken, checkRole.checkRole, (req, res) => {
   let query = 'select id, name, email, contactNumber, status from user where role = "user"';
   connection.query(query, (err, results) => {
     if (!err) {
@@ -116,7 +116,7 @@ router.get('/get', auth.authenticateToken, (req, res) => {
   })
 })
 
-router.patch('/update', auth.authenticateToken, (req, res) => {
+router.patch('/update', auth.authenticateToken, checkRole.checkRole, (req, res) => {
   let user = req.body;
   let query = 'update user set status=? where id=?';
   connection.query(query, [user.status, user.id], (err, results) => {
@@ -136,8 +136,30 @@ router.get('/checkToken', auth.authenticateToken, (req, res) => {
   return res.status(200).json({message: 'true'});
 })
 
-router.post('/changePassword', (req, res) => {
-  // const
+router.post('/changePassword', auth.authenticateToken, (req, res) => {
+  const user = req.body;
+  const email = res.locals.email;
+  let query = 'select *from user where email=? and password=?';
+  connection.query(query, [email, user.oldPassword], (err, results) => {
+    if(!err) {
+      if (results.length <= 0) {
+        return res.status(400).json({message: 'Incorrect Old password'});
+      } else if (results[0].password == user.oldPassword) {
+        let query = 'update user set password=? where email=?';
+        connection.query(query, [user.newPassword, email], (err, results) => {
+          if (!err) {
+            return res.status(200).json({message: 'Password Updated successfully!'});
+          } else {
+            return res.status(500).json(err);
+          }
+        })
+      } else {
+        return res.status(400).json({message: 'Something went wrong. Please try again later'});
+      }
+    } else {
+      return res.status(500).json(err);
+    }
+  })
 })
 
 module.exports = router;
