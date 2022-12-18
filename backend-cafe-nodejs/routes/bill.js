@@ -7,6 +7,7 @@ let path = require('path');
 let fs = require('fs');
 let uuid = require('uuid');
 let auth = require('../services/authentication');
+const { authenticateToken } = require('../services/authentication');
 
 router.post('/generateReport', auth.authenticateToken, (req, res) => {
   const generatedUuid = uuid.v1();
@@ -84,6 +85,22 @@ router.post('/getPdf', auth.authenticateToken, (req, res) => {
       }
     })
   }
+})
+
+router.delete('/delete/:id', authenticateToken, (req, res, next) => {
+  const id = req.params.id;
+  let query = 'DELETE FROM bill WHERE id=?';
+  connection.query(query, [id], (err, results) => {
+    if (!err) {
+      if (results.affectedRows === 0) {
+        return res.status(404).json({message: 'Bill id does not found'});
+      }
+      return res.status(200).json({message: 'Bill Deleted Successfully'});
+    }
+    else {
+      return res.status(500).json(err);
+    }
+  })
 })
 
 module.exports = router;
