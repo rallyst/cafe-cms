@@ -15,7 +15,7 @@ import { GlobalConstants } from '../shared/global-constants';
 
 export class SignupComponent implements OnInit {
   signupForm: any = FormGroup;
-  responceMessage: any;
+  responseMessage: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -32,6 +32,32 @@ export class SignupComponent implements OnInit {
       email: [null, [Validators.required, Validators.pattern(GlobalConstants.emailRegex)]],
       contactNumber: [null, [Validators.required, Validators.pattern(GlobalConstants.contactNumberRegex)]],
       password: [null, [Validators.required]],
+    })
+  }
+
+  handleSubmit() {
+    this.ngxService.start();
+    let formData = this.signupForm.value;
+    let data = {
+      name: formData.name,
+      email: formData.email,
+      contactNumber: formData.contactNumber,
+      password: formData.password
+    }
+    this.userService.signup(data).subscribe((response: any)  => {
+      this.ngxService.stop();
+      this.dialogRef.close();
+      this.responseMessage = response?.message;
+      this.snackbarService.openSnackBar(this.responseMessage, '');
+      this.router.navigate(['/']);
+    }, error => {
+      this.ngxService.stop();
+      if (error.error?.message) {
+        this.responseMessage = error.error?.message;
+      } else {
+        this.responseMessage = GlobalConstants.genericError;
+      }
+      this.snackbarService.openSnackBar(this.responseMessage, GlobalConstants.error);
     })
   }
 
