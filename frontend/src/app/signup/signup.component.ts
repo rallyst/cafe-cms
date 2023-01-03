@@ -25,14 +25,12 @@ export class SignupComponent implements OnInit {
     private dialogRef: MatDialogRef<SignupComponent>,
     private ngxService: NgxUiLoaderService
     ) { }
-    // Validators.pattern(GlobalConstants.nameRegex)
-    // Validators.pattern(GlobalConstants.emailRegex)
-    // Validators.pattern(GlobalConstants.contactNumberRegex)
+    
   ngOnInit(): void {
     this.signupForm = this.formBuilder.group({
-      name: [null, [Validators.required, ]],
-      email: [null, [Validators.required, ]],
-      contactNumber: [null, [Validators.required, ]],
+      name: [null, [Validators.required, Validators.pattern(GlobalConstants.nameRegex)]],
+      email: [null, [Validators.required, Validators.pattern(GlobalConstants.emailRegex)]],
+      contactNumber: [null, [Validators.required, Validators.pattern(GlobalConstants.contactNumberRegex)]],
       password: [null, [Validators.required]],
     })
   }
