@@ -8,49 +8,42 @@ import { UserService } from '../services/user.service';
 import { GlobalConstants } from '../shared/global-constants';
 
 @Component({
-  selector: 'app-signup',
-  templateUrl: './signup.component.html',
-  styleUrls: ['./signup.component.scss']
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss']
 })
-
-export class SignupComponent implements OnInit {
-  signupForm: any = FormGroup;
+export class LoginComponent implements OnInit {
+  loginForm: any = FormGroup;
   responseMessage: any;
 
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
     private userService: UserService,
-    private snackbarService: SnackbarService,
-    public dialogRef: MatDialogRef<SignupComponent>,
-    private ngxService: NgxUiLoaderService
-    ) { }
-    
+    public dialogRef: MatDialogRef<LoginComponent>,
+    private ngxService: NgxUiLoaderService,
+    private snackbarService: SnackbarService 
+  ) { }
+
   ngOnInit(): void {
-    this.signupForm = this.formBuilder.group({
-      name: [null, [Validators.required, Validators.pattern(GlobalConstants.nameRegex)]],
+    this.loginForm = this.formBuilder.group({
       email: [null, [Validators.required, Validators.pattern(GlobalConstants.emailRegex)]],
-      contactNumber: [null, [Validators.required, Validators.pattern(GlobalConstants.contactNumberRegex)]],
-      password: [null, [Validators.required]],
+      password: [null, Validators.required]
     })
   }
 
   handleSubmit() {
     this.ngxService.start();
-    console.log("Form is valid : ", this.signupForm.valid);
-    let formData = this.signupForm.value;
+    let formData = this.loginForm.value;
     let data = {
-      name: formData.name,
       email: formData.email,
-      contactNumber: formData.contactNumber,
       password: formData.password
     }
-    this.userService.signup(data).subscribe((response: any)  => {
+    this.userService.login(data).subscribe((response: any) => {
       this.ngxService.stop();
       this.dialogRef.close();
-      this.responseMessage = response?.message;
-      this.snackbarService.openSnackBar(this.responseMessage, '');
-      this.router.navigate(['/']);
+      localStorage.setItem('token', response.token);
+      this.router.navigate(['/cafe/dashboard']);
     }, error => {
       this.ngxService.stop();
       if (error.error?.message) {
@@ -58,7 +51,7 @@ export class SignupComponent implements OnInit {
       } else {
         this.responseMessage = GlobalConstants.genericError;
       }
-      this.snackbarService.openSnackBar(this.responseMessage, GlobalConstants.error);
+      this.snackbarService.openSnackBar(this.responseMessage, GlobalConstants.error)
     })
   }
 

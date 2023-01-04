@@ -18,7 +18,7 @@ export class ForgotPasswordComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private userService: UserService,
-    private dialogRef: MatDialogRef<ForgotPasswordComponent>,
+    public dialogRef: MatDialogRef<ForgotPasswordComponent>,
     private snackbarService: SnackbarService,
     private ngxService: NgxUiLoaderService
   ) { }
