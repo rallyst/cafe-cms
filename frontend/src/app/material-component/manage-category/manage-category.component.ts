@@ -48,4 +48,12 @@ export class ManageCategoryComponent implements OnInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
+  handleAddAction() {
+
+  }
+
+  handleEditAction(value: any) {
+
+  }
+
 }

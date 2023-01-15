@@ -14,7 +14,18 @@
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>Name</th>
-      <td ></td>
+      <td mat-cell *matCeilDef="let element">{{ element.name }}</td>
     </ng-container>
+
+    <ng-container matColumnDef="edit">
+      <th mat-header-cell *matHeaderCellDef>Action</th>
+      <td mat-cell *matCeilDef="let element" class="action-link">
+        <button mat-icon-button color="primary" matTooltip="Edit" (click)="handleEditAction(element)">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayColumns; sticky: true"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayColumns"></tr>
   </table>
 </div>
