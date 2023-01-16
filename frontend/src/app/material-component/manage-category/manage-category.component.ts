@@ -12,7 +12,7 @@ import { GlobalConstants } from 'src/app/shared/global-constants';
   styleUrls: ['./manage-category.component.scss']
 })
 export class ManageCategoryComponent implements OnInit {
-  displayColumns: string[] = ['name', 'edit'];
+  displayedColumns: string[] = ['name', 'edit'];
   dataSource: any;
   responseMessage: any; 
 
