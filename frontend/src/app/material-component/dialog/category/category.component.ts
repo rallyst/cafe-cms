@@ -24,7 +24,7 @@ export class CategoryComponent implements OnInit {
     private formBuilder: FormBuilder,
     private categoryService: CategoryService,
     public dialogRef: MatDialogRef<CategoryComponent>,
-    private snackbarService: SnackbarService
+    private snackbarService: SnackbarService,
   ) { }
 
   ngOnInit(): void {
@@ -34,7 +34,7 @@ export class CategoryComponent implements OnInit {
     if (this.dialogData.action === 'Edit') {
       this.dialogAction = 'Edit';
       this.action = "Update";
-      this.categoryForm.patchValue(this.dialogData);
+      this.categoryForm.patchValue(this.dialogData.data);
     } 
   }
 
