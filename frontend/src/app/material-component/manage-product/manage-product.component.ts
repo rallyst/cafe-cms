@@ -51,4 +51,19 @@ export class ManageProductComponent implements OnInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
+  handleAddAction() {
+
+  }
+
+  handleEditAction(values: any) {
+
+  }
+
+  handleDeleteAction(values: any) {
+
+  }
+
+  onChange(status: any, id: any) {
+    
+  }
 }
