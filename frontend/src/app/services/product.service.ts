@@ -13,6 +13,7 @@ export class ProductService {
   ) { }
 
   add(data: any) {
+    console.log('ADD!!!')
     return this.httpClient.post(
       '/product/add/', 
       data,
