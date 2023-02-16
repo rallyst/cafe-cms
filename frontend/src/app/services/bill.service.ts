@@ -1,22 +1,21 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CategoryService {
+export class BillService {
   url = environment.apiUrl;
 
   constructor(
     private httpClient: HttpClient
   ) { }
 
-  add(data: any) {
-    console.log()
+  generateReport(data: any) {
     return this.httpClient.post(
-      this.url +
-      '/category/add/',
+      this.url + '/bill/generateReport/',
       data,
       {
         headers: new HttpHeaders().set('Content-Type', 'application/json')
@@ -24,21 +23,13 @@ export class CategoryService {
     )
   }
 
-  update(data: any) {
-    return this.httpClient.patch(
-      this.url +
-      '/category/update/',
+  getPDF(data: any): Observable<Blob> {
+    return this.httpClient.post(
+      this.url + '/bill/getPdf/',
       data,
       {
-        headers: new HttpHeaders().set('Content-Type', 'application/json')
+        responseType: 'blob'
       }
-    )
-  }
-
-  getCategory() {
-    return this.httpClient.get(
-      this.url + 
-      '/category/get/'
     )
   }
 }
