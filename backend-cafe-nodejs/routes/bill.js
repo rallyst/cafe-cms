@@ -87,6 +87,17 @@ router.post('/getPdf', auth.authenticateToken, (req, res) => {
   }
 })
 
+router.get('/getBills', authenticateToken, (req, res, next) => {
+  let query = 'SELECT * FROM bill ORDER BY id DESC';
+  connection.query(query, (err, results) => {
+    if(!err) {
+      return res.status(200).json(results);
+    } else {
+      return res.status(500).json(err);
+    }
+  })
+})
+
 router.delete('/delete/:id', authenticateToken, (req, res, next) => {
   const id = req.params.id;
   let query = 'DELETE FROM bill WHERE id=?';
