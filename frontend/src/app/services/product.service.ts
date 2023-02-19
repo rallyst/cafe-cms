@@ -69,7 +69,7 @@ export class ProductService {
   getById(id: any) {
     return this.httpClient.get(
       this.url +
-      '/product/getById' + id
+      '/product/getById/' + id
     )
   }
 }
