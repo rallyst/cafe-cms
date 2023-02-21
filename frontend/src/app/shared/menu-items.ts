@@ -37,6 +37,12 @@ const MENUITEMS = [
     name: 'View Bill',
     icon: 'import_contacts',
     role: ''
+  },
+  {
+    state: 'user',
+    name: 'Manage User',
+    icon: 'people',
+    role: 'admin'
   }
 ]
 
